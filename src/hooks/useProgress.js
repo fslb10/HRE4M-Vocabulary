@@ -20,7 +20,12 @@ export function useProgress() {
 
   const markTerm = useCallback((termId, status) => {
     setProgress(prev => {
-      const next = { ...prev, [termId]: status }
+      const next = { ...prev }
+      if (status) {
+        next[termId] = status
+      } else {
+        delete next[termId]
+      }
       saveProgress(next)
       return next
     })

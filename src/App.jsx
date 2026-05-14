@@ -19,9 +19,9 @@ export default function App() {
   return (
     <ProgressContext.Provider value={{ progress, markTerm, resetAll }}>
       <HashRouter>
-        <div className="min-h-screen bg-[#0a0a0a] text-[#f0ece4]">
+        <div className="min-h-screen bg-[#f7f5ef] text-slate-950">
           <Header onResetClick={() => setShowReset(true)} />
-          <main className="max-w-5xl mx-auto px-4 py-8">
+          <main className="mx-auto max-w-6xl px-4 py-8">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/unit/:id" element={<UnitView />} />

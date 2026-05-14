@@ -4,26 +4,34 @@
 
 @layer base {
   html {
-    background-color: #0a0a0a;
-    color: #f0ece4;
-    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #f7f5ef;
+    color: #0f172a;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  body {
+    min-width: 320px;
   }
 
   * {
     box-sizing: border-box;
   }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-/* Flashcard flip animation */
 .flip-card {
-  perspective: 1000px;
+  perspective: 1200px;
 }
 
 .flip-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform-style: preserve-3d;
 }
 
@@ -42,16 +50,16 @@
   transform: rotateY(180deg);
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #141414;
+  background: #f1eee7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 3px;
+  background: #cbd5e1;
+  border: 3px solid #f1eee7;
+  border-radius: 999px;
 }

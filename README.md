@@ -1,6 +1,6 @@
-# HRE4M1 Vocabulary Trainer
+# HRE4M1 Vocabulary Study App
 
-A dark-themed React SPA for studying world religion vocabulary. Features flashcards, multiple-choice quizzes, and per-term progress tracking stored in localStorage.
+A clean React study app for HRE4M1 vocabulary. It includes a course dashboard, unit progress tracking, searchable term browsing, filtered study sections, interactive flashcards, and multiple quiz modes. Progress is stored locally in the browser with `localStorage`.
 
 ## Tech Stack
 
@@ -62,11 +62,11 @@ src/
     Header.jsx        Site header with Reset Progress button.
     ResetModal.jsx    Confirmation dialog for progress reset.
   pages/
-    Home.jsx          Unit grid with progress bars.
-    UnitView.jsx      Tab container for Browse/Flashcards/Quiz.
-    Browse.jsx        Scrollable term list with mark buttons.
-    Flashcards.jsx    Flip-card review with navigation.
-    Quiz.jsx          10-question multiple choice quiz.
+    Home.jsx          Study dashboard, course metrics, unit cards, and queue.
+    UnitView.jsx      Unit workspace with section filters and study modes.
+    Browse.jsx        Searchable, filterable term list with progress controls.
+    Flashcards.jsx    Keyboard-friendly flip-card study mode.
+    Quiz.jsx          Multiple-choice quiz with modes, feedback, and results.
   App.jsx             Router, progress context provider.
   main.jsx            React entry point.
   index.css           Tailwind base + flip-card CSS.

@@ -2,24 +2,24 @@ import React from 'react'
 
 export default function ResetModal({ onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-8 max-w-sm w-full">
-        <h2 className="font-serif text-2xl mb-3">Reset All Progress?</h2>
-        <p className="text-[#8a8480] text-sm mb-6">
-          This will clear all known and learning marks across every unit. This cannot be undone.
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
+      <div className="w-full max-w-sm rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+        <h2 className="text-xl font-semibold text-slate-950">Reset all progress?</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          This clears every known and learning mark across all units. Your vocabulary data will stay in place.
         </p>
-        <div className="flex gap-3">
-          <button
-            onClick={onConfirm}
-            className="flex-1 py-2 rounded bg-red-900/60 hover:bg-red-800/80 text-red-200 text-sm font-medium transition-colors"
-          >
-            Reset
-          </button>
+        <div className="mt-6 flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-2 rounded bg-[#2a2a2a] hover:bg-[#333] text-[#f0ece4] text-sm font-medium transition-colors"
+            className="flex-1 rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
           >
             Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 rounded-full bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+          >
+            Reset
           </button>
         </div>
       </div>

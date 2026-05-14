@@ -2,7 +2,40 @@ const units = [
   {
     id: 0,
     title: 'Unit 0: Church History',
+    description: 'A guided timeline from the apostolic Church through Vatican II and the global Church today.',
     accentColor: '#2d6a4f',
+    sections: [
+      {
+        id: '0.1',
+        title: 'Early Church and Martyrs',
+        summary: 'Mission, Pentecost, Christian worship, persecution, symbols, and witness.',
+      },
+      {
+        id: '0.2',
+        title: 'Constantine and Empire',
+        summary: 'Legalization, imperial support, Nicaea, Arianism, and the changing role of Church authority.',
+      },
+      {
+        id: '0.3',
+        title: 'Monasticism',
+        summary: 'Desert spirituality, Benedictine life, prayer, work, learning, and social care.',
+      },
+      {
+        id: '0.4',
+        title: 'The Great Schism',
+        summary: 'East-West tensions, theological disputes, authority, excommunication, and ecumenism.',
+      },
+      {
+        id: '0.5',
+        title: 'Reformation and Response',
+        summary: 'Late medieval corruption, Protestant teaching, Trent, Jesuits, and Catholic renewal.',
+      },
+      {
+        id: '0.6',
+        title: 'Vatican II and Today',
+        summary: 'Renewal, liturgy, laity, dialogue, mercy, and the global Catholic Church.',
+      },
+    ],
     terms: [
       {
         id: 'u0t1',
