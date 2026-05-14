@@ -58,7 +58,7 @@ For the first deploy, go to Settings > Pages in your repo and set Source to **Gi
 ```
 src/
   data/
-    vocabulary.js     Seed data. Replace with real terms here.
+    vocabulary.js     Course vocabulary data.
   hooks/
     useProgress.js    localStorage read/write for term progress.
   components/
