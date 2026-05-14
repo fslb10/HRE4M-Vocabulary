@@ -3,21 +3,31 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   BookOpen,
+  CalendarClock,
   CheckCircle2,
+  Flame,
   Layers3,
   Play,
   Sparkles,
   Target,
+  Trophy,
 } from 'lucide-react'
 import units from '../data/vocabulary'
 import { useProgressContext } from '../App'
-import { getCourseStats, getStudyQueue, getUnitStats } from '../utils/study'
+import {
+  getAchievements,
+  getCourseStats,
+  getProgressMeta,
+  getStudyQueue,
+  getUnitStats,
+} from '../utils/study'
 
 function Metric({ icon: Icon, label, value, tone = 'ink' }) {
   const tones = {
     ink: 'bg-slate-100 text-slate-700',
     green: 'bg-emerald-50 text-emerald-700',
     amber: 'bg-amber-50 text-amber-700',
+    orange: 'bg-orange-50 text-orange-700',
   }
 
   return (
@@ -68,6 +78,7 @@ function UnitCard({ unit, progress }) {
           />
         </div>
         <div className="flex gap-2 text-xs text-slate-500">
+          <span className="rounded-full bg-slate-100 px-2.5 py-1">{stats.due} due</span>
           <span className="rounded-full bg-slate-100 px-2.5 py-1">{stats.learning} learning</span>
           <span className="rounded-full bg-slate-100 px-2.5 py-1">{stats.unmarked} new</span>
         </div>
@@ -80,11 +91,14 @@ export default function Home() {
   const { progress } = useProgressContext()
   const courseStats = getCourseStats(units, progress)
   const queue = getStudyQueue(units, progress)
+  const meta = getProgressMeta(progress)
+  const achievements = getAchievements(units, progress)
+  const earnedAchievements = achievements.filter(item => item.earned)
   const continueUnit = units.find(unit => getUnitStats(unit, progress).pct < 100) || units[0]
   const continueStats = getUnitStats(continueUnit, progress)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-20 sm:pb-8">
       <section className="grid gap-6 lg:grid-cols-[1.55fr_0.95fr]">
         <div className="rounded-3xl bg-slate-950 p-8 text-white shadow-xl shadow-slate-200">
           <div className="mb-10 flex items-center gap-3">
@@ -99,17 +113,17 @@ export default function Home() {
               Build recall, not just a word list.
             </h1>
             <p className="mt-4 max-w-xl text-base leading-7 text-slate-300">
-              Review course vocabulary by unit, section, confidence level, and quiz performance.
+              Review course vocabulary by due date, unit, section, confidence level, and quiz performance.
             </p>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to={`/unit/${continueUnit.id}?tab=Flashcards`}
+              to="/review"
               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
             >
               <Play size={17} />
-              Continue studying
+              Daily review
             </Link>
             <Link
               to={`/unit/${continueUnit.id}?tab=Quiz`}
@@ -125,8 +139,8 @@ export default function Home() {
           <p className="mb-1 text-sm font-medium text-slate-500">Continue</p>
           <h2 className="text-2xl font-semibold text-slate-950">{continueUnit.title}</h2>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            {continueStats.learning > 0
-              ? `${continueStats.learning} terms are marked learning.`
+            {continueStats.due > 0
+              ? `${continueStats.due} terms are due for review.`
               : `${continueStats.unmarked} terms are still new.`}
           </p>
 
@@ -149,8 +163,8 @@ export default function Home() {
               <p className="text-xs text-slate-500">Known</p>
             </div>
             <div className="rounded-2xl bg-amber-50 p-3">
-              <p className="text-lg font-semibold text-amber-700">{continueStats.learning}</p>
-              <p className="text-xs text-amber-700/70">Learning</p>
+              <p className="text-lg font-semibold text-amber-700">{continueStats.due}</p>
+              <p className="text-xs text-amber-700/70">Due</p>
             </div>
             <div className="rounded-2xl bg-slate-50 p-3">
               <p className="text-lg font-semibold text-slate-950">{continueStats.unmarked}</p>
@@ -160,10 +174,11 @@ export default function Home() {
         </aside>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Metric icon={Layers3} label="Total terms" value={courseStats.total} />
         <Metric icon={CheckCircle2} label="Known terms" value={courseStats.known} tone="green" />
-        <Metric icon={BookOpen} label="Still learning" value={courseStats.learning} tone="amber" />
+        <Metric icon={CalendarClock} label="Due now" value={courseStats.due} tone="amber" />
+        <Metric icon={Flame} label="Study streak" value={`${meta.currentStreak || 0} day${meta.currentStreak === 1 ? '' : 's'}`} tone="orange" />
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1fr_20rem]">
@@ -181,29 +196,61 @@ export default function Home() {
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-slate-950">Study Queue</h2>
-            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-500">
-              {queue.length} terms
-            </span>
+        <aside className="space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-slate-950">Study Queue</h2>
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-500">
+                {queue.length} terms
+              </span>
+            </div>
+            <div className="space-y-3">
+              {queue.slice(0, 6).map(term => (
+                <Link
+                  key={term.id}
+                  to={`/unit/${term.unitId}`}
+                  className="block rounded-xl border border-slate-100 p-3 transition hover:border-slate-200 hover:bg-slate-50"
+                >
+                  <p className="font-medium text-slate-900">{term.term}</p>
+                  <p className="mt-1 text-xs text-slate-500">{term.unitTitle} - {term.unitSubsection}</p>
+                </Link>
+              ))}
+              {queue.length === 0 && (
+                <p className="rounded-xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-800">
+                  Everything is marked known. Nice work.
+                </p>
+              )}
+            </div>
+            <Link
+              to="/review"
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              <BookOpen size={16} />
+              Open review
+            </Link>
           </div>
-          <div className="space-y-3">
-            {queue.slice(0, 6).map(term => (
-              <Link
-                key={term.id}
-                to={`/unit/${term.unitId}`}
-                className="block rounded-xl border border-slate-100 p-3 transition hover:border-slate-200 hover:bg-slate-50"
-              >
-                <p className="font-medium text-slate-900">{term.term}</p>
-                <p className="mt-1 text-xs text-slate-500">{term.unitTitle} · {term.unitSubsection}</p>
-              </Link>
-            ))}
-            {queue.length === 0 && (
-              <p className="rounded-xl bg-emerald-50 p-4 text-sm leading-6 text-emerald-800">
-                Everything is marked known. Nice work.
-              </p>
-            )}
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-slate-950">Achievements</h2>
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-500">
+                {earnedAchievements.length}/{achievements.length}
+              </span>
+            </div>
+            <div className="space-y-2">
+              {achievements.map(item => (
+                <div
+                  key={item.id}
+                  className={`rounded-xl p-3 ${item.earned ? 'bg-amber-50 text-amber-900' : 'bg-slate-50 text-slate-500'}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Trophy size={16} className={item.earned ? 'text-amber-600' : 'text-slate-300'} />
+                    <p className="text-sm font-semibold">{item.title}</p>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 opacity-75">{item.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </aside>
       </section>

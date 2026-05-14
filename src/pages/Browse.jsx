@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { Check, Circle, Search, Star } from 'lucide-react'
 import clsx from 'clsx'
 import { useProgressContext } from '../App'
-import { getTermStatus } from '../utils/study'
+import { dueLabel, getTermRecord, getTermStatus } from '../utils/study'
 
 const FILTERS = [
   { id: 'all', label: 'All' },
@@ -105,7 +105,7 @@ export default function Browse({ unit, terms, sections }) {
               />
               <div>
                 <h3 className="font-semibold text-slate-950">
-                  {sectionId} {sectionTitles[sectionId] ? `· ${sectionTitles[sectionId]}` : ''}
+                  {sectionId} {sectionTitles[sectionId] ? `- ${sectionTitles[sectionId]}` : ''}
                 </h3>
                 <p className="text-xs text-slate-500">{sectionTerms.length} term{sectionTerms.length !== 1 ? 's' : ''}</p>
               </div>
@@ -114,6 +114,7 @@ export default function Browse({ unit, terms, sections }) {
             <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white">
               {sectionTerms.map(term => {
                 const status = getTermStatus(progress, term.id)
+                const record = getTermRecord(progress, term.id)
                 return (
                   <article key={term.id} className="p-4 transition hover:bg-slate-50 sm:p-5">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -122,10 +123,16 @@ export default function Browse({ unit, terms, sections }) {
                           <span className="text-xs font-mono text-slate-400">{term.unitSubsection}</span>
                           {status === 'known' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Known</span>}
                           {status === 'learning' && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">Learning</span>}
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">{dueLabel(progress, term.id)}</span>
                         </div>
                         <h4 className="text-xl font-semibold tracking-tight text-slate-950">{term.term}</h4>
                         <p className="mt-2 max-w-3xl leading-7 text-slate-600">{term.definition}</p>
                         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">{term.example}</p>
+                        {record && (
+                          <p className="mt-2 text-xs text-slate-400">
+                            Correct {record.timesCorrect || 0} - missed {record.timesMissed || 0}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex shrink-0 gap-2">

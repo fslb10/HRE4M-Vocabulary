@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { CheckCircle2, RotateCcw, XCircle } from 'lucide-react'
 import clsx from 'clsx'
+import { useProgressContext } from '../App'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -39,6 +41,7 @@ const MODES = [
 ]
 
 export default function Quiz({ unit, terms }) {
+  const { recordReview, recordQuiz } = useProgressContext()
   const [mode, setMode] = useState('definition')
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState(null)
@@ -47,6 +50,7 @@ export default function Quiz({ unit, terms }) {
   const [answered, setAnswered] = useState(false)
   const [restart, setRestart] = useState(0)
   const [missed, setMissed] = useState([])
+  const [answeredQuestions, setAnsweredQuestions] = useState([])
 
   const questions = useMemo(() => buildQuestions(terms, mode), [terms, mode, restart])
   const q = questions[current]
@@ -56,7 +60,10 @@ export default function Quiz({ unit, terms }) {
     if (answered) return
     setSelected(optionId)
     setAnswered(true)
-    if (optionId === q.correct.id) {
+    const correct = optionId === q.correct.id
+    recordReview(q.correct.id, correct)
+    setAnsweredQuestions(value => [...value, { term: q.correct, correct }])
+    if (correct) {
       setScore(value => value + 1)
     } else {
       setMissed(value => [...value, q.correct])
@@ -65,6 +72,14 @@ export default function Quiz({ unit, terms }) {
 
   function next() {
     if (current + 1 >= questions.length) {
+      const finalScore = answeredQuestions.filter(item => item.correct).length
+      const finalMissed = answeredQuestions.filter(item => !item.correct).map(item => item.term)
+      recordQuiz({
+        unitId: unit.id,
+        score: finalScore,
+        total: questions.length,
+        missedIds: finalMissed.map(term => term.id),
+      })
       setDone(true)
     } else {
       setCurrent(value => value + 1)
@@ -81,6 +96,7 @@ export default function Quiz({ unit, terms }) {
     setDone(false)
     setAnswered(false)
     setMissed([])
+    setAnsweredQuestions([])
     setRestart(value => value + 1)
   }
 
@@ -95,6 +111,13 @@ export default function Quiz({ unit, terms }) {
 
   if (done) {
     const pct = Math.round((score / questions.length) * 100)
+    const sectionResults = answeredQuestions.reduce((acc, item) => {
+      const key = item.term.unitSubsection || 'Section'
+      acc[key] = acc[key] || { correct: 0, total: 0 }
+      acc[key].total += 1
+      acc[key].correct += item.correct ? 1 : 0
+      return acc
+    }, {})
     return (
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="rounded-3xl bg-slate-950 p-8 text-center text-white">
@@ -108,6 +131,26 @@ export default function Quiz({ unit, terms }) {
             <RotateCcw size={17} />
             Try again
           </button>
+          {missed.length > 0 && (
+            <Link
+              to="/review"
+              className="ml-2 mt-6 inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              Review missed
+            </Link>
+          )}
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {Object.entries(sectionResults).map(([sectionId, result]) => (
+            <div key={sectionId} className="rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="text-xs font-mono text-slate-400">{sectionId}</p>
+              <p className="mt-1 text-2xl font-semibold text-slate-950">
+                {Math.round((result.correct / result.total) * 100)}%
+              </p>
+              <p className="text-sm text-slate-500">{result.correct}/{result.total} correct</p>
+            </div>
+          ))}
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5">

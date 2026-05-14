@@ -1,6 +1,6 @@
 # HRE4M1 Vocabulary Study App
 
-A clean React study app for HRE4M1 vocabulary. It includes a course dashboard, unit progress tracking, searchable term browsing, filtered study sections, interactive flashcards, and multiple quiz modes. Progress is stored locally in the browser with `localStorage`.
+A clean React study app for HRE4M1 vocabulary. It includes a course dashboard, spaced repetition, a daily review page, unit progress tracking, searchable term browsing, filtered study sections, interactive flashcards, multiple quiz modes, practice games, and achievements. Progress is stored locally in the browser with `localStorage`.
 
 ## Tech Stack
 
@@ -17,6 +17,9 @@ npm install
 
 # Start dev server at http://localhost:5173
 npm run dev
+
+# Validate vocabulary data before deploying
+npm run validate:vocab
 ```
 
 ## Adding or Editing Vocabulary
@@ -62,11 +65,16 @@ src/
     Header.jsx        Site header with Reset Progress button.
     ResetModal.jsx    Confirmation dialog for progress reset.
   pages/
-    Home.jsx          Study dashboard, course metrics, unit cards, and queue.
-    UnitView.jsx      Unit workspace with section filters and study modes.
+    Home.jsx          Study dashboard, course metrics, achievements, unit cards, and queue.
+    Review.jsx        Cross-unit daily review for due, learning, and new terms.
+    UnitView.jsx      Unit workspace with overview, section filters, and study modes.
+    Overview.jsx      Unit landing page with study path and key terms.
     Browse.jsx        Searchable, filterable term list with progress controls.
     Flashcards.jsx    Keyboard-friendly flip-card study mode.
     Quiz.jsx          Multiple-choice quiz with modes, feedback, and results.
+    Practice.jsx      Matching, fill-blank, timeline, and subsection practice.
+  utils/
+    study.js          Progress helpers, spaced-review selectors, and data validation.
   App.jsx             Router, progress context provider.
   main.jsx            React entry point.
   index.css           Tailwind base + flip-card CSS.

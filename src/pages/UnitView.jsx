@@ -1,18 +1,22 @@
 import React, { useMemo, useState } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, BookOpen, CheckCircle2, ClipboardList, Layers3, Search } from 'lucide-react'
+import { ArrowLeft, BookOpen, ClipboardList, Layers3, LayoutDashboard, Search, Sparkles } from 'lucide-react'
 import clsx from 'clsx'
 import units from '../data/vocabulary'
 import Browse from './Browse'
 import Flashcards from './Flashcards'
+import Overview from './Overview'
+import Practice from './Practice'
 import Quiz from './Quiz'
 import { useProgressContext } from '../App'
 import { getUnitSections, getUnitStats } from '../utils/study'
 
 const TABS = [
+  { id: 'Overview', icon: LayoutDashboard },
   { id: 'Browse', icon: Search },
   { id: 'Flashcards', icon: BookOpen },
   { id: 'Quiz', icon: ClipboardList },
+  { id: 'Practice', icon: Sparkles },
 ]
 
 export default function UnitView() {
@@ -23,7 +27,7 @@ export default function UnitView() {
   const [sectionId, setSectionId] = useState('all')
   const activeTab = TABS.some(tab => tab.id === searchParams.get('tab'))
     ? searchParams.get('tab')
-    : 'Browse'
+    : 'Overview'
 
   const sections = useMemo(() => unit ? getUnitSections(unit) : [], [unit])
   const stats = unit ? getUnitStats(unit, progress) : null
@@ -32,7 +36,7 @@ export default function UnitView() {
     : []
 
   function setActiveTab(tab) {
-    setSearchParams(tab === 'Browse' ? {} : { tab })
+    setSearchParams(tab === 'Overview' ? {} : { tab })
   }
 
   if (!unit) {
@@ -138,7 +142,7 @@ export default function UnitView() {
       </section>
 
       <section className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="flex gap-1 border-b border-slate-200 p-2">
+        <div className="flex gap-1 overflow-x-auto border-b border-slate-200 p-2">
           {TABS.map(tab => {
             const Icon = tab.icon
             return (
@@ -146,7 +150,7 @@ export default function UnitView() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={clsx(
-                  'inline-flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition sm:flex-none',
+                  'inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition',
                   activeTab === tab.id
                     ? 'bg-slate-950 text-white'
                     : 'text-slate-500 hover:bg-slate-50 hover:text-slate-950'
@@ -160,13 +164,15 @@ export default function UnitView() {
         </div>
 
         <div className="p-4 sm:p-6">
+          {activeTab === 'Overview' && <Overview unit={unit} progress={progress} />}
           {activeTab === 'Browse' && <Browse unit={unit} terms={visibleTerms} sections={sections} />}
           {activeTab === 'Flashcards' && <Flashcards unit={unit} terms={visibleTerms} />}
           {activeTab === 'Quiz' && <Quiz unit={unit} terms={visibleTerms} />}
+          {activeTab === 'Practice' && <Practice terms={visibleTerms} sections={sections} />}
         </div>
       </section>
 
-      {activeTab !== 'Browse' && visibleTerms.length < 4 && (
+      {['Flashcards', 'Quiz'].includes(activeTab) && visibleTerms.length < 4 && (
         <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
           This section has a small term set, so quizzes may use fewer answer choices.
         </p>
