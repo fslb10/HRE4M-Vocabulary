@@ -44,30 +44,11 @@ Term IDs must be globally unique. A simple convention is `u{unitId}t{termIndex}`
 
 ## Deploying to GitHub Pages
 
-### First-time setup
+Push to `main`. The GitHub Actions workflow builds and deploys automatically.
 
-1. Make sure your repository is named `HRE4M-Vocabulary` (this matches the `base` in `vite.config.js`).
-2. Install the `gh-pages` package (already listed in `devDependencies`):
-   ```bash
-   npm install
-   ```
-3. Confirm the `homepage` field in `package.json` matches your GitHub username:
-   ```
-   https://{your-username}.github.io/HRE4M-Vocabulary/
-   ```
-4. In your GitHub repository settings, go to Pages and set the source branch to `gh-pages`.
+The live site will be at `https://fslb10.github.io/HRE4M-Vocabulary/`.
 
-### Deploy
-
-```bash
-npm run deploy
-```
-
-This builds the project and pushes the `dist/` folder to the `gh-pages` branch. GitHub Pages will serve it within a minute or two.
-
-### Subsequent deploys
-
-Run `npm run deploy` again whenever you update vocabulary or code. No other steps needed.
+For the first deploy, go to Settings > Pages in your repo and set Source to **GitHub Actions**.
 
 ## Repository Structure
 

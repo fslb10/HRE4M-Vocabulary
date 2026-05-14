@@ -22,14 +22,12 @@ export default function Flashcards({ unit }) {
         Card {index + 1} of {terms.length}
       </p>
 
-      {/* Flip card container */}
       <div
         className="flip-card w-full max-w-lg cursor-pointer"
         style={{ height: '280px' }}
         onClick={() => setFlipped(f => !f)}
       >
         <div className={`flip-card-inner ${flipped ? 'flipped' : ''}`}>
-          {/* Front: term */}
           <div
             className="flip-card-face rounded-xl border-2 bg-[#141414] flex flex-col items-center justify-center p-8 text-center"
             style={{ borderColor: unit.accentColor }}
@@ -39,7 +37,6 @@ export default function Flashcards({ unit }) {
             <span className="text-[#8a8480] text-xs mt-4">Click to reveal</span>
           </div>
 
-          {/* Back: definition */}
           <div
             className="flip-card-face flip-card-back rounded-xl border-2 bg-[#141414] flex flex-col items-center justify-center p-8 text-center"
             style={{ borderColor: unit.accentColor }}
@@ -50,7 +47,6 @@ export default function Flashcards({ unit }) {
         </div>
       </div>
 
-      {/* Mark buttons */}
       <div className="flex gap-3 mt-6">
         <button
           onClick={() => markTerm(term.id, status === 'known' ? null : 'known')}
@@ -74,7 +70,6 @@ export default function Flashcards({ unit }) {
         </button>
       </div>
 
-      {/* Navigation */}
       <div className="flex gap-4 mt-6">
         <button
           onClick={() => goTo((index - 1 + terms.length) % terms.length)}
