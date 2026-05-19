@@ -20,6 +20,9 @@ npm run dev
 
 # Validate vocabulary data before deploying
 npm run validate:vocab
+
+# Validate vocabulary and production build together
+npm run verify
 ```
 
 ## Adding or Editing Vocabulary
@@ -47,11 +50,22 @@ Term IDs must be globally unique. A simple convention is `u{unitId}t{termIndex}`
 
 ## Deploying to GitHub Pages
 
-Push to `main`. The GitHub Actions workflow builds and deploys automatically.
+The public site is deployed by GitHub Actions, not by a local `npm run deploy` command.
+
+To publish changes:
+
+```bash
+npm run verify
+git add .
+git commit -m "Describe the update"
+git push origin main
+```
+
+Every push to `main` runs `.github/workflows/deploy.yml`, validates the vocabulary data, builds the app, and deploys the `dist` artifact through GitHub Pages.
 
 The live site will be at `https://fslb10.github.io/HRE4M-Vocabulary/`.
 
-For the first deploy, go to Settings > Pages in your repo and set Source to **GitHub Actions**.
+The repo's Pages source should stay set to **GitHub Actions** in Settings > Pages. Do not publish with the `gh-pages` package or push a separate `gh-pages` branch; that path is not the active deployment source for this site.
 
 ## Repository Structure
 
